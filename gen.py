@@ -15,7 +15,9 @@ numdays = rows * cols
 
 
 def commit(file, stamp, msg):
+    file.write("\nsleep 1")
     file.write("\necho '" + stamp + '#' + msg + "' >> " + gitfile)
+    file.write("\nsleep 1")
     file.write('\ngit commit -a -m "' + msg + '" --date ' + stamp)
 
 
@@ -42,6 +44,11 @@ def process_image(path):
     file = open(imap, "w")
     fileSh = open('scripts/' + imgName + '.git.sh', "w")
     fileSh.write('#!/bin/sh\nset -e\n')
+    fileSh.write('git fsck --unreachable\n')
+    fileSh.write('git reflog expire --expire=0 --all\n')
+    fileSh.write('git repack -a -d -l\n')
+    fileSh.write('git prune\n')
+    fileSh.write('git gc --aggressive\n')
     px = img.load()
     size = img.size
     if (52, 7) != size:
