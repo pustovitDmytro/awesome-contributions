@@ -1,10 +1,7 @@
 #!/usr/bin/python
-
-import os
 import sys
 from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime, timedelta
-from subprocess import call
 
 imgDir = 'images/'
 scriptDir = 'scripts/'
@@ -18,7 +15,7 @@ numdays = rows * cols
 
 
 def commit(file, stamp, msg):
-    file.write("\necho " + stamp + ':' + msg " >> " + gitfile)
+    file.write("\necho " + stamp + '#' + msg + " >> " + gitfile)
     file.write("\ngit add " + gitfile)
     file.write('\ngit commit -m "' + msg + '" --date ' + stamp)
 
@@ -26,7 +23,7 @@ def commit(file, stamp, msg):
 def write_px(file, x, y, intensity, prefix=""):
     days_ago = numdays + offset - (x * rows + y)
     for i in range(0, intensity):
-        d = datetime.today() - timedelta(days=days_ago, second=i)
+        d = datetime.today() - timedelta(days=days_ago, seconds=i)
         stamp = d.isoformat()
         msg = str(days_ago) + '_' + str(i)
         commit(file, stamp, msg)
@@ -44,7 +41,8 @@ def process_image(path):
     imap = path + '.map'
     imgName = path.split('/')[-1].split('.')[0]
     file = open(imap, "w")
-    fileSh = open('scripts/' + imgName + 'git.sh', "w")
+    fileSh = open('scripts/' + imgName + '.git.sh', "w")
+    fileSh.write('#!/bin/sh\nset -e\n')
     px = img.load()
     size = img.size
     if (52, 7) != size:
