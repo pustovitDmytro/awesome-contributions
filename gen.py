@@ -6,6 +6,7 @@ from PIL import Image, ImageDraw, ImageFont
 from datetime import date, timedelta
 from subprocess import call
 
+imgDir = 'images/'
 # GitHub uses Sunday-starting weeks, so add 1
 offset = (date.today().weekday() + 1) % 7
 rows = 7
@@ -60,12 +61,11 @@ def process_text(txt, offset=2):
     f = 1
     image = Image.new("RGB", [x * f for x in size], (255, 255, 255))
     draw = ImageDraw.Draw(image)
-# see https://mail.python.org/pipermail/image-sig/2005-August/003497.html
     draw.fontmode = "1"
     font = ImageFont.truetype("font/5x5_pixel.ttf", 8)
     draw.text((offset, 1), txt, (0, 0, 0), font=font)
 
-    image.save(txt + ".bmp")
+    image.save(imgDir + txt + ".bmp")
 
 
 def main():
