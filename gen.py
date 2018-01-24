@@ -3,41 +3,33 @@
 import os
 import sys
 from PIL import Image, ImageDraw, ImageFont
-from datetime import date, timedelta
+from datetime import datetime, timedelta
 from subprocess import call
 
 imgDir = 'images/'
 scriptDir = 'scripts/'
 gitfile = '.blob'
 # GitHub uses Sunday-starting weeks, so add 1
-offset = (date.today().weekday() + 1) % 7
+offset = (datetime.today().weekday() + 1) % 7
 rows = 7
 cols = 52
 size = (cols, rows)
 numdays = rows * cols
 
 
-def commit(days_ago, msg):
-    d = date.today() - timedelta(days=days_ago)
-    t = str(d) + " 00:00:00"
-    os.system("echo " + msg + " > .tmpfile")
-    os.system("git add .tmpfile")
-    os.system('GIT_COMMITTER_DATE="' + t + '"' + ' GIT_AUTHOR_DATE="' +
-              t + '"' + ' git commit -m "' + msg + '" 2>&1 >/dev/null')
+def commit(file, stamp, msg):
+    file.write("\necho " + stamp + ':' + msg " >> " + gitfile)
+    file.write("\ngit add " + gitfile)
+    file.write('\ngit commit -m "' + msg + '" --date ' + stamp)
 
 
-def write_px(x, y, intensity, prefix=""):
+def write_px(file, x, y, intensity, prefix=""):
     days_ago = numdays + offset - (x * rows + y)
-    # d = date.today() - timedelta(days=days_ago)
-    # t = str(d) + " 00:00:00"
-    # print "val=",intensity, "x",x,"y",y,"date:",d
-    print(x, y)
-    print(intensity)
-    # print(days_ago)
-    print('-------------')
-    # for i in range(0, intensity):
-    # msg = prefix + os.urandom(8).encode("hex")
-    # commit(days_ago, msg)
+    for i in range(0, intensity):
+        d = datetime.today() - timedelta(days=days_ago, second=i)
+        stamp = d.isoformat()
+        msg = str(days_ago) + '_' + str(i)
+        commit(file, stamp, msg)
 
 
 def rgb2gray(rgb):
@@ -50,7 +42,9 @@ def rgb2gray(rgb):
 def process_image(path):
     img = Image.open(path)
     imap = path + '.map'
+    imgName = path.split('/')[-1].split('.')[0]
     file = open(imap, "w")
+    fileSh = open('scripts/' + imgName + 'git.sh', "w")
     px = img.load()
     size = img.size
     if (52, 7) != size:
@@ -60,16 +54,17 @@ def process_image(path):
         for x in range(size[0]):
             val = 255 - int(rgb2gray(px[x, y]))
             val //= 16
-            if(val>0):
+            if(val > 0):
                 file.write("#")
-            else: file.write(' ')
+            else:
+                file.write(' ')
     for x in range(size[0]):
         for y in range(size[1]):
             val = 255 - int(rgb2gray(px[x, y]))
-            val //= 16
-            print(val)
-            # write_px(x, y, val, prefix="ign-")
+            val //= 10
+            write_px(fileSh, x, y, val, prefix="ign-")
     file.close()
+    fileSh.close()
 
 
 def process_text(txt, offset=2):
