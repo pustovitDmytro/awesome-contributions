@@ -1,1 +1,4 @@
-images
+images/*.bmp
+images/*.map
+scripts/*.git.sh
+etc/config.py
