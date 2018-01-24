@@ -30,7 +30,7 @@ def write_px(x, y, intensity, prefix=""):
   days_ago = numdays+offset - (x*rows+y)
   d = date.today() - timedelta(days = days_ago)
   t = str(d) + " 00:00:00"
-  print "val=",intensity, "x",x,"y",y,"date:",d
+  # print "val=",intensity, "x",x,"y",y,"date:",d
   for i in range(0, intensity):
     msg = prefix + os.urandom(8).encode("hex")
     commit(days_ago, msg)
@@ -43,7 +43,7 @@ def process_image(path):
   if (52,7) != size:
     raise Exception("Image should be 52x7, got " + size)
   for x in range(size[0]):
-    print "processed line",x
+    # print "processed line",x
     for y in range(size[1]):
       val = 255-int(rgb2gray(px[x,y]))
       val /= 16
