@@ -15,9 +15,9 @@ numdays = rows * cols
 
 
 def commit(file, stamp, msg):
-    file.write("\nsleep 1")
+    # file.write("\nsleep 1")
     file.write("\necho '" + stamp + '#' + msg + "' >> " + gitfile)
-    file.write("\nsleep 1")
+    # file.write("\nsleep 1")
     file.write('\ngit commit -a -m "' + msg + '" --date ' + stamp)
 
 
