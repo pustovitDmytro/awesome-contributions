@@ -11,13 +11,13 @@ Pillow (PIL)
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/twinone/awesome-contributions
+git clone https://github.com/pustovitDmytro/awesome-contributions
 cd awesome-contributions
 ```
 
 2. Install dependencies:
 ```bash
-python3-pip -m -r requirements.txt
+python3 -m pip install -r requirements.txt
 ```
 
 3. Generate image from text:
