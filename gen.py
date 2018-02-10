@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import sys
+import imp
 from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime, timedelta
 
@@ -85,6 +86,12 @@ def process_text(txt, offset=2):
 def main():
     if sys.argv[1] == "--text":
         process_text(sys.argv[2])
+    elif sys.argv[1] == "--config":
+        module = imp.load_source('module', sys.argv[2])
+        from module import variants
+        print(variants[0])
+        # process_text(text)
+        # process_image(imgDir + text + ".bmp")
     else:
         process_image(sys.argv[1])
 
