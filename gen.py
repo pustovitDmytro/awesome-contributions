@@ -89,9 +89,9 @@ def main():
     elif sys.argv[1] == "--config":
         module = imp.load_source('module', sys.argv[2])
         from module import variants
-        print(variants[0])
-        # process_text(text)
-        # process_image(imgDir + text + ".bmp")
+        text = variants[0]
+        process_text(text)
+        process_image(imgDir + text + ".bmp")
     else:
         process_image(sys.argv[1])
 
