@@ -38,7 +38,7 @@ def rgb2gray(rgb):
     return gray
 
 
-def process_image(path, saveAs=''):
+def process_image(path, count = 20, saveAs=''):
     img = Image.open(path)
     imap = path + '.map'
     imgName = path.split('/')[-1].split('.')[0]
@@ -67,7 +67,8 @@ def process_image(path, saveAs=''):
     for x in range(size[0]):
         for y in range(size[1]):
             val = 255 - int(rgb2gray(px[x, y]))
-            val //= 10
+            val //= 255
+            val *= count
             write_px(fileSh, x, y, val, prefix="ign-")
     file.close()
     fileSh.close()
@@ -89,10 +90,10 @@ def main():
         process_text(sys.argv[2])
     elif sys.argv[1] == "--config":
         module = imp.load_source('module', sys.argv[2])
-        from module import variants, name
+        from module import variants, name, count
         variant = variants[0]
         process_text(variant)
-        process_image(imgDir + variant + ".bmp", name)
+        process_image(imgDir + variant + ".bmp", count, name)
     else:
         process_image(sys.argv[1])
 
