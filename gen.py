@@ -38,12 +38,13 @@ def rgb2gray(rgb):
     return gray
 
 
-def process_image(path):
+def process_image(path, saveAs=''):
     img = Image.open(path)
     imap = path + '.map'
     imgName = path.split('/')[-1].split('.')[0]
     file = open(imap, "w")
-    fileSh = open('scripts/' + imgName + '.git.sh', "w")
+    savePath = saveAs if saveAs else 'scripts/' + imgName + '.git.sh'
+    fileSh = open(saveAs, "w")
     fileSh.write('#!/bin/sh\nset -e\n')
     fileSh.write('git fsck --unreachable\n')
     fileSh.write('git reflog expire --expire=0 --all\n')
@@ -88,10 +89,10 @@ def main():
         process_text(sys.argv[2])
     elif sys.argv[1] == "--config":
         module = imp.load_source('module', sys.argv[2])
-        from module import variants
-        text = variants[0]
-        process_text(text)
-        process_image(imgDir + text + ".bmp")
+        from module import variants, name
+        variant = variants[0]
+        process_text(variant)
+        process_image(imgDir + variant + ".bmp", name)
     else:
         process_image(sys.argv[1])
 
