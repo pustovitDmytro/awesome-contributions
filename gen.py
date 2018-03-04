@@ -15,14 +15,14 @@ size = (cols, rows)
 numdays = rows * cols
 
 
-def commit(file, stamp, msg):
+def commit(file, stamp, msg, author='pustovitDmytro <dipustovit@gmail.com>'):
     # file.write("\nsleep 1")
     file.write("\necho '" + stamp + '#' + msg + "' >> " + gitfile)
     # file.write("\nsleep 1")
-    file.write('\ngit commit -a -m "' + msg + '" --date ' + stamp)
+    file.write('\ngit commit -a -m "' + msg + '" --date ' + stamp + '--author="' + author + '"')
 
 
-def write_px(file, x, y, intensity, prefix=""):
+def write_px(file, x, y, intensity, prefix="", author):
     days_ago = numdays + offset - (x * rows + y)
     for i in range(0, intensity):
         d = datetime.today() - timedelta(days=days_ago, seconds=i)
@@ -38,7 +38,7 @@ def rgb2gray(rgb):
     return gray
 
 
-def process_image(path, count = 20, saveAs=''):
+def process_image(path, count = 20, saveAs='', author):
     img = Image.open(path)
     imap = path + '.map'
     imgName = path.split('/')[-1].split('.')[0]
@@ -69,7 +69,7 @@ def process_image(path, count = 20, saveAs=''):
             val = 255 - int(rgb2gray(px[x, y]))
             val //= 255
             val *= count
-            write_px(fileSh, x, y, val, prefix="ign-")
+            write_px(fileSh, x, y, val, prefix="ign-", author)
     file.close()
     fileSh.close()
 
@@ -90,10 +90,10 @@ def main():
         process_text(sys.argv[2])
     elif sys.argv[1] == "--config":
         module = imp.load_source('module', sys.argv[2])
-        from module import variants, name, count
+        from module import variants, name, count, author
         variant = variants[0]
         process_text(variant)
-        process_image(imgDir + variant + ".bmp", count, name)
+        process_image(imgDir + variant + ".bmp", count, name, author)
     else:
         process_image(sys.argv[1])
 
